@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+venv/
+src/chroma_db/
+src/uploaded_DRDO_ProcurementManual2025Latest.pdf
+data/
+.idea/
