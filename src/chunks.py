@@ -2,7 +2,7 @@ from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 def chunks(file_path):
-    reader=PdfReader("../data/DRDO_ProcurementManual2025Latest.pdf")
+    reader=PdfReader(file_path)
 
     splitter=RecursiveCharacterTextSplitter(chunk_size=512,chunk_overlap=100,separators=["\n\n","\n","."," ",""])
 
