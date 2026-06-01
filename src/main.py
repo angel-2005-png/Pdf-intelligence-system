@@ -19,8 +19,8 @@ async def upload(file:UploadFile=File(...)):
     file_path = f"uploaded_{file.filename}"
     with open(file_path, "wb") as f:
         f.write(await file.read())
-    text=load_document(file_path)
-    text_chunks=chunks(text)
+
+    text_chunks=chunks(file_path)
     store_with_chunks(text_chunks)
     return{"messege":"done","No.of Chunks":len(text_chunks)}
 
