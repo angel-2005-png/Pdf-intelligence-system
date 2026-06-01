@@ -20,8 +20,7 @@ def chunks(file_path):
 
     return allchunks
 
-final_chunks=chunks("../data/DRDO_ProcurementManual2025Latest.pdf")
-print(f" Total No of chunks:{len(final_chunks)}")
+
 
 
 
