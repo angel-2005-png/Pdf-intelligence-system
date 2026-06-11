@@ -1,39 +1,37 @@
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_pinecone import PineconeVectorStore
-from pinecone import Pinecone, ServerlessSpec
+from pinecone import Pinecone
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+index = pc.Index("pdf-intelligence")
 
 
 def store_with_chunks(allchunks):
-    # initialize pinecone
-    pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+    vectors = []
 
-    index_name = "pdf-intelligence"
+    for i, chunk in enumerate(allchunks):
+        # embed using llama-text-embed-v2
+        embedding = pc.inference.embed(
+            model="llama-text-embed-v2",
+            inputs=[chunk.page_content],
+            parameters={"input_type": "passage"}
+        )[0].values
 
-    # create index if it doesn't exist
-    if index_name not in pc.list_indexes().names():
-        pc.create_index(
-            name=index_name,
-            dimension=384,  # all-MiniLM-L6-v2 outputs 384 dimensions
-            metric="cosine",
-            spec=ServerlessSpec(
-                cloud="aws",
-                region="us-east-1"
-            )
-        )
+        vectors.append({
+            "id": str(i),
+            "values": embedding,
+            "metadata": {
+                "text": chunk.page_content,
+                **chunk.metadata
+            }
+        })
 
-    # store chunks in pinecone
-    vectordb = PineconeVectorStore.from_documents(
-        documents=allchunks,
-        embedding=embedding_model,
-        index_name=index_name
-    )
+    # upsert in batches of 100
+    for i in range(0, len(vectors), 100):
+        index.upsert(vectors=vectors[i:i + 100])
+        print(f"Uploaded batch {i // 100 + 1}")
 
-    return vectordb
-
-print("EVERYTHING DONE ANGEL!!")
+    print("All chunks stored in Pinecone ✅")
+    return index

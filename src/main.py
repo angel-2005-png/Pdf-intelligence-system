@@ -32,6 +32,8 @@ def ask_question(request:Question_answer):
         return {"answer":"I could not find this in the manual.","Sources":[]}
 
     sources = list(set([c.metadata["page Number"] for c in chunks]))
+
+
     return {"answer": answer, "sources": sources}
 
 

@@ -22,16 +22,19 @@ answer=
 """
 )
 
+
 def ask(question):
-    chunks=retrieval(question)
+    results = retrieval(question)
 
-    if not chunks:
-        print("No answers found for question")
-        return None,[]
+    if not results:
+        return None, []
 
-    context="\n\n".join(chunk.page_content for chunk in chunks)
-    prompt_template=prompt.format(context=context,question=question)
-    response=llm.invoke(prompt_template)
-    answer=response.content
+    # extract text from pinecone results
+    context = "\n\n".join([r.metadata["text"] for r in results])
+    sources = list(set([r.metadata["page Number"] for r in results]))
 
-    return answer,chunks
+    prompt_text = prompt.format(context=context, question=question)
+    response = llm.invoke(prompt_text)
+    answer = response.content
+
+    return answer, results
