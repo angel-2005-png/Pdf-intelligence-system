@@ -57,14 +57,22 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # ── Sidebar ───────────────────────────────────────────
-with st.sidebar:
-    st.markdown("### 📄 DRDO Procurement Manual 2025")
-    st.markdown("---")
-    st.metric("Chunks indexed", "1,332")
-    st.metric("Model", "llama-text-embed-v2")
-    st.metric("LLM", "llama-3.1-8b")
-    st.metric("Retrieval", "Pinecone + Score Filter")
+    with st.sidebar:
+        st.markdown("### 📄 DRDO Procurement Manual 2025")
+        st.markdown("---")
+        st.markdown("""
+        <div style='font-size:13px; color:#888; margin-bottom:4px;'>Chunks indexed</div>
+        <div style='font-size:22px; font-weight:600; color:#534AB7; margin-bottom:12px;'>1,332</div>
 
+        <div style='font-size:13px; color:#888; margin-bottom:4px;'>Model</div>
+        <div style='font-size:16px; font-weight:500; margin-bottom:12px;'>llama-text-embed-v2</div>
+
+        <div style='font-size:13px; color:#888; margin-bottom:4px;'>LLM</div>
+        <div style='font-size:16px; font-weight:500; margin-bottom:12px;'>llama-3.1-8b</div>
+
+        <div style='font-size:13px; color:#888; margin-bottom:4px;'>Retrieval</div>
+        <div style='font-size:16px; font-weight:500; margin-bottom:12px;'>Pinecone + Score Filter</div>
+        """, unsafe_allow_html=True)
     if st.button("🔄 Clear chat", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
@@ -72,7 +80,7 @@ with st.sidebar:
 # ── Chat header ───────────────────────────────────────
 st.markdown("""
 <div style='padding: 1rem 0; border-bottom: 0.5px solid #e0e0e0; margin-bottom: 1rem;'>
-    <h2 style='font-size:20px; font-weight:600; color:#1a1a2e; margin:0;'>
+    <h2 style='font-size:20px; font-weight:600; color:093C5D; margin:0;'>
         Ask the DRDO Procurement Manual anything
     </h2>
     <p style='font-size:13px; color:#888; margin:4px 0 0;'>
